@@ -1,0 +1,20 @@
+[package]
+name = "cryptopals_rust"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "cryptopals_rust"
+crate-type = ["cdylib"]
+path = "rust/lib.rs"
+
+[dependencies.pyo3]
+version = "0.19"
+features = ["extension-module"]
+
+[dependencies]
+hex = "^0.4"
+base64 = "^0.21"
+
+[build-dependencies]
+maturin = "1.0.1"
