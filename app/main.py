@@ -56,7 +56,7 @@ def format_time(t: int) -> None:
 
 def print_time(prefix: str, t: int, res: str) -> None:
     """Print the time in a human readable format and the result"""
-    print(f"{bcolors.HEADER}{prefix}: {format_time(t)} =>{bcolors.ENDC} {res}")
+    print(f"{bcolors.HEADER}{prefix: >6}: {format_time(t): <12} =>{bcolors.ENDC} {res}")
 
 
 @main.command()
@@ -71,22 +71,29 @@ def challenge(s: str, c: str) -> None:
     c = "{:0>2}".format(int(c))
     path = f"set{s}.challenge{c}"
 
-    func_py = getattr(globals()[path], f"challenge{c}")
-    t = time.monotonic_ns()
-    res_py = func_py()
-    t = time.monotonic_ns() - t
-    print_time("PY", t, res_py)
 
-    func_rs = getattr(cryptopals_rust, f"challenge{c}")
-    t = time.monotonic_ns()
-    res_rs = func_rs()
-    t = time.monotonic_ns() - t
-    print_time("RS", t, res_rs)
+    # set up the functions to be tested
+    funcs = {
+        "Python": globals()[path],
+        "PyGolf": globals()[path],
+        "Rust": cryptopals_rust,
+        "RuGolf": cryptopals_rust
+    }
+    challenge = f"challenge{c}"
 
-    if res_py == res_rs:
-        print(f"{bcolors.OKGREEN}OK{bcolors.ENDC}")
-    else:
-        print(f"{bcolors.FAIL}KO{bcolors.ENDC}")
+    results = {}
+    times = {}
+    for name, module in funcs.items():
+        func = getattr(module, challenge)
+        t = time.monotonic_ns()
+        results[name] = func()
+        times[name] = time.monotonic_ns() - t
+        print_time(name, times[name], results[name])
+
+    # compare the results
+    comparison = [(n1, n2) for n1 in results for n2 in results if n1 != n2]
+    for n1, n2 in comparison:
+        print(f"{n1} == {n2}", f"{bcolors.OKGREEN}OK{bcolors.ENDC}" if results[n1] == results[n2] else f"{bcolors.FAIL}KO{bcolors.ENDC}")
 
 
 @main.command()
@@ -116,10 +123,13 @@ def init(s: str, c: str) -> None:
 
     with open(f"app/{path}.py", "w") as f:
         f.write(f"def challenge{c}() -> str:\n    return str()\n")
+        f.write(f"\n\ndef challenge{c}_golf() -> str:\n    return str()\n")
 
     os.makedirs(f"rust/set{s}", exist_ok=True)
 
     with open(f"rust/{path}.rs", "w") as f:
-        f.write(f"use pyo3::prelude::*;\n\n#[pyfunction]\npub fn challenge{c}() -> PyResult<String> {{\n    Ok(String::from(\"\"))\n}}\n")
+        f.write(f"use pyo3::prelude::*;\n")
+        f.write(f"\n#[pyfunction]\npub fn challenge{c}() -> PyResult<String> {{\n    Ok(String::from(\"\"))\n}}\n")
+        f.write(f"\n\n#[pyfunction]\npub fn challenge{c}_golf() -> PyResult<String> {{\n    Ok(String::from(\"\"))\n}}\n")
 
     print("Done")

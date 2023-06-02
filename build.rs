@@ -60,6 +60,7 @@ fn main() {
     for (set_name, mod_names) in &all_modules {
         for mod_name in mod_names {
             lib_rs_contents.push_str(&format!("    m.add_function(wrap_pyfunction!({}::{}::{}, m)?)?;\n", set_name, mod_name, mod_name));
+            lib_rs_contents.push_str(&format!("    m.add_function(wrap_pyfunction!({}::{}::{}_golf, m)?)?;\n", set_name, mod_name, mod_name));
         }
     }
     
