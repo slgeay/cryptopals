@@ -9,6 +9,7 @@ Completed challenges from [Cryptopals](https://cryptopals.com/).
 Challenge | Python | PyGolf | Rust | RsGolf
 :---:|:---:|:---:|:---:|:---:
 [1](https://cryptopals.com/sets/1/challenges/1) | ✅ | ✅ | ✅ | ✅
+[2](https://cryptopals.com/sets/1/challenges/2) | ✅ | ✅ | ✅ | ✅
 
 ## Usage
 
