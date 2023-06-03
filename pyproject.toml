@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Cryptopals"
 authors = ["slgeay <avomailbox-github@yahoo.fr>"]
 packages = [
-    {"include" = "**/*.py", from = "app"},
+    {"include" = "**/*.py", from = "python"},
 ]
 
 [tool.poetry.dependencies]
@@ -31,7 +31,7 @@ testpaths = "tests"
 addopts = "--benchmark-disable -p no:nose"
 
 [tool.poetry.scripts]
-app = "app.main:main"
+app = "python.main:main"
 
 [tool.black]
 line-length = 1000

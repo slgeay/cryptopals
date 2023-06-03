@@ -59,6 +59,17 @@ def print_time(prefix: str, t: int, res: str) -> None:
     print(f"{bcolors.HEADER}{prefix: >6}: {format_time(t): <12} =>{bcolors.ENDC} {res}")
 
 
+def check(expected, result):
+    return f"{bcolors.OKGREEN}OK{bcolors.ENDC}" if expected == result else f"{bcolors.FAIL}KO{bcolors.ENDC}"
+
+
+def get_path(s, c):
+    s = "{:0>2}".format(int(s))
+    c = "{:0>2}".format(int(c))
+    path = f"set{s}/challenge{c}"
+    return s,c,path
+
+
 @main.command()
 @click.argument("s")
 @click.argument("c")
@@ -67,15 +78,19 @@ def challenge(s: str, c: str) -> None:
 
     ex: app challenge 1 2"""
 
-    s = "{:0>2}".format(int(s))
-    c = "{:0>2}".format(int(c))
-    path = f"set{s}.challenge{c}"
+    s, c, path = get_path(s, c)
 
+    with open(f"data/{path}.txt", "r") as f:
+        data = f.read()
 
-    # set up the functions to be tested
+    expected = None
+    if os.path.exists(f"result/{path}.txt"):
+        with open(f"result/{path}.txt", "r") as f:
+            expected = f.read()
+
     funcs = {
-        "Python": globals()[path],
-        "PyGolf": globals()[path],
+        "Python": globals()[f"set{s}.challenge{c}"],
+        "PyGolf": globals()[f"set{s}.challenge{c}"],
         "Rust": cryptopals_rust,
         "RuGolf": cryptopals_rust
     }
@@ -86,14 +101,17 @@ def challenge(s: str, c: str) -> None:
     for name, module in funcs.items():
         func = getattr(module, challenge)
         t = time.monotonic_ns()
-        results[name] = func()
+        results[name] = func(data)
         times[name] = time.monotonic_ns() - t
         print_time(name, times[name], results[name])
-
-    # compare the results
-    comparison = [(n1, n2) for n1 in results for n2 in results if n1 != n2]
-    for n1, n2 in comparison:
-        print(f"{n1} == {n2}", f"{bcolors.OKGREEN}OK{bcolors.ENDC}" if results[n1] == results[n2] else f"{bcolors.FAIL}KO{bcolors.ENDC}")
+        
+    if expected:
+        for n in results:
+            print(f"{n: >6}", check(expected, results[n]))
+    else:
+        comparison = [(n1, n2) for n1 in results for n2 in results if n1 != n2]
+        for n1, n2 in comparison:
+            print(f"{n1: >6} == {n2: >6}", check(results[n1], results[n2]))
 
 
 @main.command()
@@ -104,32 +122,37 @@ def init(s: str, c: str) -> None:
 
     ex: app init 1 2"""
 
-    s = "{:0>2}".format(int(s))
-    c = "{:0>2}".format(int(c))
-    path = f"set{s}/challenge{c}"
+    s, c, path = get_path(s, c)
 
-    if os.path.exists(f"app/{path}.py"):
+    if os.path.exists(f"python/{path}.py"):
         print(f"Python set {s} challenge {c} already exists")
         return
     
     if os.path.exists(f"rust/{path}.rs"):
         print(f"Rust set {s} challenge {c} already exists")
         return
+    
+    os.makedirs(f"data/set{s}", exist_ok=True)
+    with open(f"data/{path}.txt", "w") as f:
+        pass
+    
+    os.makedirs(f"result/set{s}", exist_ok=True)
+    with open(f"result/{path}.txt", "w") as f:
+        pass
 
-    if not os.path.exists(f"app/set{s}"):
-        os.makedirs(f"app/set{s}")
-        with open(f"app/set{s}/__init__.py", "w") as f:
-            pass
+    os.makedirs(f"python/set{s}", exist_ok=True)
+    with open(f"python/set{s}/__init__.py", "w") as f:
+        pass
 
-    with open(f"app/{path}.py", "w") as f:
-        f.write(f"def challenge{c}() -> str:\n    return str()\n")
-        f.write(f"\n\ndef challenge{c}_golf() -> str:\n    return str()\n")
+    with open(f"python/{path}.py", "w") as f:
+        f.write(f"def challenge{c}(s: str) -> str:\n    return str()\n")
+        f.write(f"\n\ndef challenge{c}_golf(s: str) -> str:\n    return str()\n")
 
     os.makedirs(f"rust/set{s}", exist_ok=True)
 
     with open(f"rust/{path}.rs", "w") as f:
         f.write(f"use pyo3::prelude::*;\n")
-        f.write(f"\n#[pyfunction]\npub fn challenge{c}() -> PyResult<String> {{\n    Ok(String::from(\"\"))\n}}\n")
-        f.write(f"\n\n#[pyfunction]\npub fn challenge{c}_golf() -> PyResult<String> {{\n    Ok(String::from(\"\"))\n}}\n")
+        f.write(f"\n#[pyfunction]\npub fn challenge{c}(s: String) -> PyResult<String> {{\n    Ok(String::from(\"\"))\n}}\n")
+        f.write(f"\n\n#[pyfunction]\npub fn challenge{c}_golf(s: String) -> PyResult<String> {{\n    Ok(String::from(\"\"))\n}}\n")
 
     print("Done")
