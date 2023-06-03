@@ -88,20 +88,22 @@ def challenge(s: str, c: str) -> None:
         with open(f"result/{path}.txt", "r") as f:
             expected = f.read()
 
-    funcs = {
-        "Python": globals()[f"set{s}.challenge{c}"],
-        "PyGolf": globals()[f"set{s}.challenge{c}"],
-        "Rust": cryptopals_rust,
-        "RuGolf": cryptopals_rust
-    }
     challenge = f"challenge{c}"
+    golf = f"challenge{c}_golf"
+
+    funcs = {
+        "Python": (globals()[f"set{s}.challenge{c}"], challenge),
+        "PyGolf": (globals()[f"set{s}.challenge{c}"], golf),
+        "Rust": (cryptopals_rust, challenge),
+        "RsGolf": (cryptopals_rust, golf),
+    }
 
     results = {}
     times = {}
-    for name, module in funcs.items():
-        func = getattr(module, challenge)
+    for name, (module, func) in funcs.items():
+        f = getattr(module, func)
         t = time.monotonic_ns()
-        results[name] = func(data)
+        results[name] = f(data)
         times[name] = time.monotonic_ns() - t
         print_time(name, times[name], results[name])
         
