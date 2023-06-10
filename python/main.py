@@ -118,7 +118,7 @@ def challenge(s: str, c: str) -> None:
         if len(active_results) == 1:
             print(f"{list(active_results)[0]: >6}", f"{bcolors.OKCYAN}?{bcolors.ENDC}" )
         else:
-            comparison = [(r1, r2) for r1 in active_results for r2 in active_results if r1 != r2]
+            comparison = [(r1, r2) for r1 in active_results for r2 in active_results if r1 < r2]
             for r1, r2 in comparison:
                 print(f"{r1: >6} == {r2: >6}", check(results[r1], results[r2]))
 
