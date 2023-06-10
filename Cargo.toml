@@ -17,4 +17,5 @@ hex = "^0.4"
 base64 = "^0.21"
 
 [build-dependencies]
-maturin = "1.0.1"
+maturin = "= 1.0.1"
+pyproject-toml = "= 0.6.0"

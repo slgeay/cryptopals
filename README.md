@@ -16,8 +16,10 @@ Challenge | Python | PyGolf | Rust | RsGolf
 ### Setup
 
 ```bash
-poetry install
-poetry shell
+poetry install # install python dependencies
+poetry shell # activate virtual environment
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh # install rust
+cargo install maturin # install maturin
 ```
 
 ### Run challenge
