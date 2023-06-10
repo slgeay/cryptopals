@@ -108,12 +108,19 @@ def challenge(s: str, c: str) -> None:
         print_time(name, times[name], results[name])
         
     if expected:
-        for n in results:
-            print(f"{n: >6}", check(expected, results[n]))
+        for r in results:
+            print(f"{r: >6}", check(expected, results[r]))
     else:
-        comparison = [(n1, n2) for n1 in results for n2 in results if n1 != n2]
-        for n1, n2 in comparison:
-            print(f"{n1: >6} == {n2: >6}", check(results[n1], results[n2]))
+        empty_results = [r for r in results if results[r] == ""]
+        for r in empty_results:
+            print(f"{r: >6}", f"{bcolors.FAIL}KO{bcolors.ENDC}")
+        active_results = [r for r in results if results[r] != ""]
+        if len(active_results) == 1:
+            print(f"{list(active_results)[0]: >6}", f"{bcolors.OKCYAN}?{bcolors.ENDC}" )
+        else:
+            comparison = [(r1, r2) for r1 in active_results for r2 in active_results if r1 != r2]
+            for r1, r2 in comparison:
+                print(f"{r1: >6} == {r2: >6}", check(results[r1], results[r2]))
 
 
 @main.command()
@@ -166,4 +173,4 @@ def init(s: str, c: str) -> None:
     with open(f"README.md", "a") as f:
         f.write(readme)
 
-    print("Done")
+    print(f"Done : {link}")
