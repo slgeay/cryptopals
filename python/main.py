@@ -124,6 +124,9 @@ def init(s: str, c: str) -> None:
 
     ex: app init 1 2"""
 
+    link = f"https://cryptopals.com/sets/{s}/challenges/{c}"
+    header = f"\n### Set {s}\n\nChallenge | Python | PyGolf | Rust | RsGolf\n:---:|:---:|:---:|:---:|:---:\n"
+    readme = f"[{c}]({link}) |  |  |  | \n"
     s, c, path = get_path(s, c)
 
     if os.path.exists(f"python/{path}.py"):
@@ -133,6 +136,9 @@ def init(s: str, c: str) -> None:
     if os.path.exists(f"rust/{path}.rs"):
         print(f"Rust set {s} challenge {c} already exists")
         return
+    
+    if not os.path.exists(f"data/set{s}"):
+        readme = header + readme
     
     os.makedirs(f"data/set{s}", exist_ok=True)
     with open(f"data/{path}.txt", "w") as f:
@@ -156,5 +162,8 @@ def init(s: str, c: str) -> None:
         f.write(f"use pyo3::prelude::*;\n")
         f.write(f"\n#[pyfunction]\npub fn challenge{c}(s: String) -> PyResult<String> {{\n    Ok(String::from(\"\"))\n}}\n")
         f.write(f"\n\n#[pyfunction]\npub fn challenge{c}_golf(s: String) -> PyResult<String> {{\n    Ok(String::from(\"\"))\n}}\n")
+
+    with open(f"README.md", "a") as f:
+        f.write(readme)
 
     print("Done")
