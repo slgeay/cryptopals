@@ -8,7 +8,7 @@ Completed challenges from [Cryptopals](https://cryptopals.com/).
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh # install rust
-pyenv install 3.11.1 # install python
+pyenv install 3.11.4 # install python
 poetry env use python3.11 # create virtual environment
 poetry shell # activate virtual environment
 poetry install # install python dependencies
@@ -36,3 +36,4 @@ Challenge | Python | PyGolf | Rust | RsGolf
 [1](https://cryptopals.com/sets/1/challenges/1) | ✅ | ✅ | ✅ | ✅
 [2](https://cryptopals.com/sets/1/challenges/2) | ✅ | ✅ | ✅ | ✅
 [3](https://cryptopals.com/sets/1/challenges/3) | ✅ | ✅ | ✅ | ✅
+[4](https://cryptopals.com/sets/1/challenges/4) |  |  |  | 
