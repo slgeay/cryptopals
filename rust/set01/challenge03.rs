@@ -1,5 +1,6 @@
 use pyo3::prelude::*;
 
+
 #[pyfunction]
 pub fn challenge03(s: String) -> PyResult<String> {
     let decoded_string = hex::decode(s).unwrap();
@@ -35,5 +36,5 @@ pub fn challenge03(s: String) -> PyResult<String> {
 
 #[pyfunction]
 pub fn challenge03_golf(s: String) -> PyResult<String> {
-    let v=hex::decode(s).unwrap();Ok((0..255).map(|k|v.iter().map(|x|x^k).collect::<Vec<u8>>().iter().map(|x|*x as char).collect::<String>()).max_by_key(|x|x.chars().filter(|c|"etaoinshrdlu ".contains(*c)).count()).unwrap().to_string())
+    let d=hex::decode(s).unwrap();Ok((0..255).map(|k|d.iter().map(|x|x^k).collect::<Vec<u8>>().iter().map(|x|*x as char).collect::<String>()).max_by_key(|x|x.chars().filter(|c|"etaoinshrdlu ".contains(*c)).count()).unwrap().to_string())
 }

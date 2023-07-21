@@ -36,4 +36,4 @@ Challenge | Python | PyGolf | Rust | RsGolf
 [1](https://cryptopals.com/sets/1/challenges/1) | ✅ | ✅ | ✅ | ✅
 [2](https://cryptopals.com/sets/1/challenges/2) | ✅ | ✅ | ✅ | ✅
 [3](https://cryptopals.com/sets/1/challenges/3) | ✅ | ✅ | ✅ | ✅
-[4](https://cryptopals.com/sets/1/challenges/4) |  |  |  | 
+[4](https://cryptopals.com/sets/1/challenges/4) | ✅ | ✅ | ✅ | 
