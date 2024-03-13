@@ -39,5 +39,10 @@ pub fn challenge04(s: String) -> PyResult<String> {
 
 #[pyfunction]
 pub fn challenge04_golf(s: String) -> PyResult<String> {
-    Ok(String::from(""))
+    Ok(s.split('\n')
+     .filter_map(|l| hex::decode(l).ok())
+     .flat_map(|decoded_string| (0..255).map(move |k| decoded_string.iter().map(|&byte| byte ^ k).collect::<Vec<u8>>()))
+     .filter_map(|x| String::from_utf8(x).ok())
+     .max_by_key(|string| string.chars().filter(|&c| "etaoinshrdlu ".contains(c.to_ascii_lowercase())).count())
+     .unwrap())
 }
