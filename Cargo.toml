@@ -9,13 +9,17 @@ crate-type = ["cdylib"]
 path = "rust/lib.rs"
 
 [dependencies.pyo3]
-version = "0.19"
+version = "0.20.3"
 features = ["extension-module"]
 
 [dependencies]
 hex = "^0.4"
-base64 = "^0.21"
+base64 = "0.22.0"
+rustls = "0.23.1"
 
 [build-dependencies]
-maturin = "= 1.0.1"
-pyproject-toml = "= 0.6.0"
+maturin = "1.5.0"
+pyproject-toml = "0.10.0"
+cmake = "0.1.48"
+
+
